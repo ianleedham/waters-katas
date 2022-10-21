@@ -1,0 +1,20 @@
+ __  ___      ___   .___________.    ___      
+|  |/  /     /   \  |           |   /   \     
+|  '  /     /  ^  \ `---|  |----`  /  ^  \    
+|    <     /  /_\  \    |  |      /  /_\  \   
+|  .  \   /  _____  \   |  |     /  _____  \  
+|__|\__\ /__/     \__\  |__|    /__/     \__\ IDEAS
+
+
+Thought of something you'd like to in kata sessions? Note them down here!
+
+Please add relevant links below (include a title please)
+
+OR
+
+add a .txt file to the git repository outlining scenarios/ criteria for us to work to.
+
+//END
+
+
+
