@@ -8,13 +8,50 @@
 
 Thought of something you'd like to in kata sessions? Note them down here!
 
-Please add relevant links below (include a title please)
+Please add ideas/ links below (include a title please)
 
 OR
 
 add a .txt file to the git repository outlining scenarios/ criteria for us to work to.
 
 //END
+
+SPIN THE WHEEL
+
+Create a wheel spinner that a user can add text to (e.g. names/prizes) and spin to choose a winning section randomly.
+
+- The user can input between 2 and 12 items to go on the wheel
+- Each item on the wheel should be sectioned equally
+- The background of each section should be a different, solid colour
+- The wheel needs a 'pointer' in a fixed position to indicate the result
+- The spinning of the wheel should be random; in terms of number of times it spins and which result it lands on
+- The winning result should be displayed as an overlayed window
+
+- Optional: Add confetti visual for the winner
+
+
+
+A-PET-TURE
+
+Create a UI that allows pet owners to configure their new smart pet flap. 
+
+- The pet flap identifies pets by microchip ID, acceptable microchip number formats are:
+    - 15 digit number - e.g. 977200000000000
+    - 10 digit number - e.g. 111111112A
+    - 9/13 digit number - e.g. AVID*012*345*378
+- One pet can only be associated with one microchip ID
+- Each pet should have their own named profile where the owner can configure the settings
+- A pet should be allowed into the (house) at any time of day
+- The times a pet is allowed to leave the (house) is completely configurable by the owner and can consist of up to two time ranges (24hr format)
+- The time ranges should update automatically with regional clock shifts e.g. BST
+
+- Optional: allow the owner to display times in a 12hr format
+- Optional: allow the owner to upload a picture to the pet's profile
+
+
+
+
+
 
 
 
