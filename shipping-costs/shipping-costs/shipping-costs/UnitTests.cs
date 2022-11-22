@@ -7,19 +7,19 @@ namespace shipping_costs
     // Test-drive a function that correctly calculates the minimum shipping costs given the following pricing rules:
 
     // We only deliver within the UK, which includes Northern Ireland, the Channel Islands, the Isle of Man and the Scottish islands.
-    // Standard postage costs Â£4.99 per item and is free for orders totalling over Â£25 where there are no exceptional items (see below).
-    // First class delivery in the UK: add Â£2.99 per item on top of regular postage costs.
-    // Next day delivery within the UK: add Â£11.99 per item to all orders.
+    // Standard postage costs £4.99 per item and is free for orders totalling over £25 where there are no exceptional items (see below).
+    // First class delivery in the UK: add £2.99 per item on top of regular postage costs.
+    // Next day delivery within the UK: add £11.99 per item to all orders.
     //      - Only available in the mainland UK.
-    // Large items (any dimension over 30cm): add Â£19.90 per item; first class is the only available option.
-    // Heavy items (over 15kg): add Â£39:90 each item, again first class only, and
+    // Large items (any dimension over 30cm): add £19.90 per item; first class is the only available option.
+    // Heavy items (over 15kg): add £39:90 each item, again first class only, and
     //      - Only available in mainland UK.
-    // First class delivery off the mainland: add Â£9.00 per item.
-    // Special price for video games: next day add Â£3.90 per item + Â£1.50 per kg
+    // First class delivery off the mainland: add £9.00 per item.
+    // Special price for video games: next day add £3.90 per item + £1.50 per kg
     //      - Only available in mainland UK.
     // Luxury watches and jewellery are always shipped as individual separate items. Delivery address must be in mainland UK. Add 36.99 per item.
     //      - Only available in mainland UK.
-    // FYI 
+    // FYI - We agreed mainland = you can drive there
 
 
     [TestClass]
@@ -48,6 +48,18 @@ namespace shipping_costs
 
             Assert.IsTrue(exception.Message.Contains(destination));
             Assert.AreEqual(message, exception.Message);
+        }
+
+        //also - should allow regular postage to offshore mainland??
+        [TestMethod]
+        public void WhenDestination_IsThe_ChannelIslands_AndNextDayDeliverySpecified_Then_ExceptionIsThrown()
+        {
+            var calculator = new PostageCalculator();
+
+            var exception = Assert.ThrowsException<Exception>(
+                () => calculator.CalculatePostage("nextdaydelivery", 11.00, 1, "Channel Islands"));
+
+            Assert.AreEqual("Cannot do Next Day Delivery to Channel Islands", exception.Message);
         }
         
 
