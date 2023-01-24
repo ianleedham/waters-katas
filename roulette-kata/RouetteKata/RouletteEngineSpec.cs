@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RouletteKata
 {
@@ -178,39 +179,47 @@ namespace RouletteKata
         // * In number ranges from 1 to 10 and 19 to 28, odd numbers are red and even are black.In ranges from 11 to 18 and 29 to 36, odd numbers are black and even are red.
         // * 0 is coloured green.
         [TestMethod]
-        public void CustomerCanWinWithRedBet()
+        [DataRow(1,20, DisplayName = "Customer Win Red Bet, odd in first range")]
+        [DataRow(12,20, DisplayName = "Customer Win Red Bet, even in second range")]
+        [DataRow(19, 20, DisplayName = "Customer Win Red Bet, odd in third range")]
+        [DataRow(30, 20, DisplayName = "Customer Win Red Bet, even in fourth range")]
+        [DataRow(2,0, DisplayName = "Customer Lose Red Bet, even in first range")]
+        [DataRow(11, 0, DisplayName = "Customer Lose Red Bet, odd in second range")]
+        public void CustomerPlacesRedBets(int wheelPositionResult,int expectedWinnings)
         {
-            int wheelPositionResult = 1;
             int betAmount = 10;
 
             RouletteEngine engine = new RouletteEngine(wheelPositionResult);
 
-            IBet redBet = new ColourBet(betAmount,"Red");
+            IBet redBet = new ColourBet(betAmount,Colour.Red);
             engine.PlaceBet(redBet);
 
             engine.Spin();
 
             int winnings = engine.CalculateWinnings();
 
-            Assert.AreEqual(20, winnings);
+            Assert.AreEqual(expectedWinnings, winnings);
         }
 
         [TestMethod]
-        public void CustomerCanLoseRedBet()
+        [DataRow(2,20, DisplayName = "Customer Win Black Bet, even in first range")]
+        [DataRow(1, 0, DisplayName = "Customer Lose Black Bet, odd in first range")]
+        [DataRow(0, 0, DisplayName = "Customer Lose Green Bet")]
+        public void CustomerPlacesBlackBets(int wheelPositionResult,int expectedWinnings)
         {
-            int wheelPositionResult = 2;
+            //last test (green) needs breaking out of this bank because its not related
             int betAmount = 10;
 
             RouletteEngine engine = new RouletteEngine(wheelPositionResult);
 
-            IBet redBet = new ColourBet(betAmount, "Red");
-            engine.PlaceBet(redBet);
+            IBet blackBet = new ColourBet(betAmount,Colour.Black);
+            engine.PlaceBet(blackBet);
 
             engine.Spin();
 
             int winnings = engine.CalculateWinnings();
 
-            Assert.AreEqual(0, winnings);
+            Assert.AreEqual(expectedWinnings, winnings);
         }
     }
 
@@ -261,6 +270,8 @@ namespace RouletteKata
         public abstract int betMultipler { get; }
 
         public abstract bool HasWon(int targetWheelPosition);
+        
+        public bool IsEven(int targetWheelPosition) => targetWheelPosition % 2 == 0;
     }
 
     public class EvenBet : Bet
@@ -276,8 +287,6 @@ namespace RouletteKata
         {
             return targetWheelPosition != 0 && IsEven(targetWheelPosition);
         }
-
-        public static bool IsEven(int targetWheelPosition) => targetWheelPosition % 2 == 0; // move to base class Bet
     }
 
     public class OddBet : Bet
@@ -291,7 +300,7 @@ namespace RouletteKata
 
         public override bool HasWon(int targetWheelPosition)
         {
-            return !EvenBet.IsEven(targetWheelPosition);
+            return !IsEven(targetWheelPosition);
         }
     }
 
@@ -310,17 +319,46 @@ namespace RouletteKata
         
     }
 
+    public enum Colour
+    {
+        Green,
+        Red,
+        Black
+    }
+
     public class ColourBet : Bet
     {
         public override int betMultipler { get => 2; }
 
-        public ColourBet(int amount, string colour)
+        private readonly IEnumerable<int> range2 = Enumerable.Range(11, 8);
+        private readonly IEnumerable<int> range4 = Enumerable.Range(29, 8);
+        private readonly Colour _colour;
+
+        public ColourBet(int amount, Colour colour)
         {
             Amount = amount;
+            _colour = colour;
         }
 
-        public override bool HasWon(int targetWheelPosition) { return IsRed(targetWheelPosition); }
+        public override bool HasWon(int targetWheelPosition) { 
+           //deal with green!
+            if(_colour == Colour.Red)
+                return IsRed(targetWheelPosition);
+            return !IsRed(targetWheelPosition);
+        }
 
-        private bool IsRed(int targetWheelPosition) => targetWheelPosition == 1; // refactor this logic
+        private bool IsRed(int targetWheelPosition)
+        {
+            //check for zero      
+            IEnumerable<int> RedIsEvenRange = range2.Concat(range4);
+
+            if (IsEven(targetWheelPosition))
+            {
+                return RedIsEvenRange.Contains(targetWheelPosition);
+            }
+
+            return !(RedIsEvenRange.Contains(targetWheelPosition));
+        }
+
     }
 }
